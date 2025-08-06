@@ -1,5 +1,6 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
@@ -10,6 +11,7 @@ const app = new cdk.App();
 
 const stack = new cdk.Stack(app, 'EMD-FargateService15',
  // { env: { account: AWS_ACCOUNT, region: AWS_REGION }}
+ { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION }}
 );
 
 // Create VPC
@@ -94,11 +96,18 @@ httpListener.addTargets('EMD-ECS', {
   })],
 
 });
-function generateBucketName(stack: cdk.Stack) : string {
+// function generateBucketName(stack: cdk.Stack) : string {
+//   const environmentType = 'Development';
+//   const region = stack.region.toUpperCase();
+//   const timestamp = new Date().toISOString();
+//   return `${environmentType}-${region}-${timestamp}`;
+// }
+ function generateBucketName(stack: cdk.Stack) : string {
   const environmentType = 'Development';
-  const region = stack.region.toUpperCase();
-  const timestamp = new Date().toISOString();
-  return `${environmentType}-${region}-${timestamp}`;
+  const region = stack.region;
+  const timestamp = new Date().toISOString().split('T')[0];
+  const result = `${environmentType}-${region}-${timestamp}`;
+  return result.toLocaleLowerCase();
 }
 
 const logBucket = new s3.Bucket(stack, 'LogBucket', {
