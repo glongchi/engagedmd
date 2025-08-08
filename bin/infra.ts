@@ -5,13 +5,11 @@ import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as path from 'path';
 
 const app = new cdk.App();
 
 const stack = new cdk.Stack(app, 'EMD-FargateService15',
- // { env: { account: AWS_ACCOUNT, region: AWS_REGION }}
  { env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION }}
 );
 
@@ -150,6 +148,5 @@ const logBucket = new s3.Bucket(stack, 'LogBucket', {
   versioned: true,
 });
 
-
-  // enable logging to S3
+// enable logging to S3
  alb.logAccessLogs(logBucket, 'alb-logs'); // 'alb-logs' is the optional prefix within the bucket
